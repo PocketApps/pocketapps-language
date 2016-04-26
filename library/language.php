@@ -7,10 +7,21 @@ class pocketapps_language {
         $this->language = $language;
     }
 
-    public function get_language($key, $language) {
+    public function get($key, $untranslatable = false) {
+        return $this->get_language($key, $untranslatable);
+    }
+
+    private function get_language($key, $untranslatable = false) {
         $key = str_replace(" ", "_", strtoupper($key));
-        $dir = dirname(__FILE__) . "/". $language . "/";
-        $file = $dir . "language-" . $language . ".json";
+
+        if ($untranslatable) {
+            $dir = dirname(__FILE__) . "strings/core/";
+            $file = $dir . "core.json";
+        } else {
+            $dir = dirname(__FILE__) . "/strings/". $this->language . "/";
+            $file = $dir . "language-" . $this->language . ".json";
+        }
+
         if (!is_dir($dir)) {
             mkdir($dir);
         }
@@ -23,9 +34,5 @@ class pocketapps_language {
             file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
             return $json[$key];
         }
-    }
-
-    public function get($key) {
-        return $this->get_language($key, $this->language);
     }
 }
